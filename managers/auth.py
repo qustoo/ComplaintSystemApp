@@ -19,6 +19,7 @@ class AuthManager:
             token = jwt.encode(payload, settings.JWT_SECRET, settings.ALGORITHM)
             return token
         except Exception as err:
+            print(err)
             ...
             # log this exception
 
