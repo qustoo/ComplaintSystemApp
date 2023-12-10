@@ -9,16 +9,19 @@ from datetime import datetime, timedelta
 
 
 class AuthManager:
-    def encode_token(self,user):
+    @staticmethod
+    def encode_token(user):
         try:
             payload = {
-                "sub":user.id,
-                "exp":datetime.utcnow() + timedelta(minutes=120)
+                "sub": user.id,
+                "exp": datetime.utcnow() + timedelta(minutes=120),
             }
-            return jwt.encode(payload,settings.JWT_SECRET,settings.ALGORITHM)
+            token = jwt.encode(payload, settings.JWT_SECRET, settings.ALGORITHM)
+            return token
         except Exception as err:
             ...
             # log this exception
+
 
 class CustomHTTPBearer(HTTPBearer):
     async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:

@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from .enums import RoleType,State
+from .enums import RoleType, State
 
 
 class Base(DeclarativeBase):
@@ -24,7 +24,6 @@ class User(Base):
         server_default=RoleType.complainer.name, nullable=False
     )
     iban: Mapped[str] = mapped_column(String(100))
-
 
 
 class Complaint(Base):
