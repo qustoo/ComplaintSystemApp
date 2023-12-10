@@ -1,3 +1,4 @@
+from fastapi import Request
 from sqlalchemy import select, update
 from models import RoleType, State, Complaint
 from database import async_session_factory
