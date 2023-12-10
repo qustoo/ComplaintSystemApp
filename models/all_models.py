@@ -20,6 +20,7 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(255))
     first_name: Mapped[str] = mapped_column(String(100))
     last_name: Mapped[str] = mapped_column(String(100))
+    phone: Mapped[str] = mapped_column(String(20))
     role: Mapped[RoleType] = mapped_column(
         server_default=RoleType.complainer.name, nullable=False
     )
