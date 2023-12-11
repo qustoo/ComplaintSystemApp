@@ -26,13 +26,13 @@ async def get_all_users(email: Optional[str] = None):
     status_code=201,
 )
 async def change_by_admin(user_id: int):
-    await UserManager.change_role_status_by_user_id(RoleType.admin,user_id)
+    await UserManager.change_role_status_by_user_id(RoleType.admin, user_id)
+
 
 @router.put(
     "/users/{user_id}/make-approver",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    #status_code=201,
+    # status_code=201,
 )
 async def change_by_approver(user_id: int):
-    await UserManager.change_role_status_by_user_id(RoleType.approver,user_id)
-
+    await UserManager.change_role_status_by_user_id(RoleType.approver, user_id)

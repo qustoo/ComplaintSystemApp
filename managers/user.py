@@ -58,8 +58,10 @@ class UserManager:
     @staticmethod
     async def change_role_status_by_user_id(new_role: RoleType, user_id: int):
         async with async_session_factory() as session:
-            stmt = update(User).filter_by(id=user_id).values(role=new_role).returning(User)
+            stmt = (
+                update(User).filter_by(id=user_id).values(role=new_role).returning(User)
+            )
             usr = (await session.execute(stmt)).one_or_none()
             if not usr:
-                raise HTTPException(403,"user not found")
+                raise HTTPException(403, "user not found")
             await session.commit()
