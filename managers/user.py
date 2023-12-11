@@ -39,3 +39,17 @@ class UserManager:
         elif not verify_password(user_data.password, _user.password):
             raise HTTPException(400, "wrong pass")
         return AuthManager.encode_token(_user)
+
+    @staticmethod
+    async def get_all_users():
+        async with async_session_factory() as session:
+            stmt = select(User)
+            _res = await session.execute(stmt)
+            return _res.scalars().all()
+
+    @staticmethod
+    async def get_user_by_email(_email):
+        async with async_session_factory() as session:
+            stmt = select(User).filter_by(email=_email)
+            _res = await session.execute(stmt)
+            return _res.scalars().all()
