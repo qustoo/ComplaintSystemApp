@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from passlib.context import CryptContext
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
+from models.enums import RoleType
 from managers import AuthManager
 from models import User
 from database import async_session_factory
@@ -53,3 +54,12 @@ class UserManager:
             stmt = select(User).filter_by(email=_email)
             _res = await session.execute(stmt)
             return _res.scalars().all()
+
+    @staticmethod
+    async def change_role_status_by_user_id(new_role: RoleType, user_id: int):
+        async with async_session_factory() as session:
+            stmt = update(User).filter_by(id=user_id).values(role=new_role).returning(User)
+            usr = (await session.execute(stmt)).one_or_none()
+            if not usr:
+                raise HTTPException(403,"user not found")
+            await session.commit()
