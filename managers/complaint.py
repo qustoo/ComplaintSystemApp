@@ -35,3 +35,25 @@ class ComplaintManager:
         async with async_session_factory() as session:
             await session.execute(stmt)
             await session.commit()
+
+    @staticmethod
+    async def approve(complaint_id: int):
+        async with async_session_factory() as session:
+            stmt = (
+                update(Complaint)
+                .values(status=State.approved)
+                .filter_by(id=complaint_id)
+            )
+            await session.execute(stmt)
+            await session.commit()
+
+    @staticmethod
+    async def reject(complaint_id: int):
+        async with async_session_factory() as session:
+            stmt = (
+                update(Complaint)
+                .values(status=State.rejected)
+                .filter_by(id=complaint_id)
+            )
+            await session.execute(stmt)
+            await session.commit()

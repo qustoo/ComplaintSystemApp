@@ -36,3 +36,21 @@ async def create_new_complaint(request: Request, complaint_obj: ComplaintIn):
 )
 async def delete_complaint(complaint_id: int):
     await ComplaintManager.delete_complaint(complaint_id)
+
+
+@router.put(
+    "/complaints/{complaint_id}/approve",
+    dependencies=[Depends(oauth2_schema)],
+    status_code=201,
+)
+async def approve_specific_complaint(complaint_id: int):
+    return await ComplaintManager.approve(complaint_id)
+
+
+@router.put(
+    "/complaints/{complaint_id}/reject",
+    dependencies=[Depends(oauth2_schema)],
+    status_code=201,
+)
+async def reject_specific_complaint(complaint_id: int):
+    return await ComplaintManager.reject(complaint_id)
