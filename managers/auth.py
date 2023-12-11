@@ -6,14 +6,14 @@ from sqlalchemy import select
 from models import User, RoleType
 from config import settings
 from datetime import datetime, timedelta
-
+from database import async_session_factory
 
 class AuthManager:
     @staticmethod
     def encode_token(user):
         try:
             payload = {
-                "sub": user.id,
+                "sub": str(user.id), # subject must be a string!!!!!! Это по поводу sub
                 "exp": datetime.utcnow() + timedelta(minutes=120),
             }
             token = jwt.encode(payload, settings.JWT_SECRET, settings.ALGORITHM)
@@ -27,29 +27,35 @@ class AuthManager:
 class CustomHTTPBearer(HTTPBearer):
     async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:
         _res = await super().__call__(request)
-        try:
-            payload = jwt.decode(
-                _res.credentials, settings.JWT_SECRET, settings.ALGORITHM
-            )
-            user = select(User).filter(User.c.id == payload.get("sub"))
-            # state - should include the value of the anti-forgery unique session token,
-            request.state.user = user
-            return payload
-        except JWTError as err:
-            print(f"{err=}")
-            raise HTTPException(status_code=401, detail="failed to decode jwt")
+        payload = jwt.decode(
+            _res.credentials, key=settings.JWT_SECRET, algorithms=[settings.ALGORITHM]
+        )
+        async with async_session_factory() as session:
+            stmt = select(User).filter(User.id == int(payload.get("sub")))
+            _user = await session.execute(stmt)
+            _user = _user.scalars().one_or_none()
+        # state - should include the value of the anti-forgery unique session token,
+        request.state.user = _user        
+        return payload
+
+        # except JWTError as err:
+        #     print(f"{err=}")
+        #     raise HTTPException(status_code=401, detail="failed to decode jwt")
+
+
+oauth2_schema = CustomHTTPBearer()
 
 
 def is_complainer(request: Request):
-    if request.state.user.file is not RoleType.complainer:
+    if request.state.user.role is not RoleType.complainer:
         raise HTTPException(403, "Forbidden")
 
 
 def is_approver(request: Request):
-    if request.state.user.file is not RoleType.approver:
+    if request.state.user.role is not RoleType.approver:
         raise HTTPException(403, "Forbidden")
 
 
 def is_admin(request: Request):
-    if request.state.user.file is not RoleType.admin:
+    if request.state.user.role is not RoleType.admin:
         raise HTTPException(403, "Forbidden")
