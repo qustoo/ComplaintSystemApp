@@ -9,3 +9,10 @@ class BaseComplaint(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserBase(BaseModel):
+    email: str
+
+    class Config:
+        orm_mode = True
