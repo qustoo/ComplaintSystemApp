@@ -1,11 +1,10 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Request
 from managers.complaint import ComplaintManager
-from schemas.request import UserLoginIn, UserRegisterIn
-from managers import UserManager, oauth2_schema
+from managers import oauth2_schema
 from schemas.request import ComplaintIn
 from schemas.response import ComplaintOut
-from managers import is_complainer
+from managers import is_complainer, is_admin
 
 router = APIRouter(tags=["Complaints"])
 
@@ -28,3 +27,12 @@ async def get_call_complaints(request: Request):
 async def create_new_complaint(request: Request, complaint_obj: ComplaintIn):
     user = request.state.user
     return await ComplaintManager.create_complaint(complaint_obj, user)
+
+
+@router.delete(
+    "/complaints/{complaint_id}",
+    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    status_code=201,
+)
+async def delete_complaint(complaint_id: int):
+    await ComplaintManager.delete_complaint(complaint_id)

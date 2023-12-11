@@ -1,5 +1,5 @@
 from fastapi import Request
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, delete
 from models import RoleType, State, Complaint
 from database import async_session_factory
 
@@ -28,3 +28,10 @@ class ComplaintManager:
             await session.commit()
             _res = await session.execute(select(Complaint).where(Complaint.id == _id))
             return _res.scalars().one_or_none()
+
+    @staticmethod
+    async def delete_complaint(_id: int):
+        stmt = delete(Complaint).filter_by(id=_id)
+        async with async_session_factory() as session:
+            await session.execute(stmt)
+            await session.commit()
