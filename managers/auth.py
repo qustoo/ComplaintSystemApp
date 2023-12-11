@@ -8,12 +8,13 @@ from config import settings
 from datetime import datetime, timedelta
 from database import async_session_factory
 
+
 class AuthManager:
     @staticmethod
     def encode_token(user):
         try:
             payload = {
-                "sub": str(user.id), # subject must be a string!!!!!! Это по поводу sub
+                "sub": str(user.id),  # subject must be a string!!!!!! Это по поводу sub
                 "exp": datetime.utcnow() + timedelta(minutes=120),
             }
             token = jwt.encode(payload, settings.JWT_SECRET, settings.ALGORITHM)
@@ -35,7 +36,7 @@ class CustomHTTPBearer(HTTPBearer):
             _user = await session.execute(stmt)
             _user = _user.scalars().one_or_none()
         # state - should include the value of the anti-forgery unique session token,
-        request.state.user = _user        
+        request.state.user = _user
         return payload
 
         # except JWTError as err:

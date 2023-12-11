@@ -17,11 +17,11 @@ class ComplaintManager:
             return res.scalars().all()
 
     @staticmethod
-    async def create_complaint(complaint_data,user):
+    async def create_complaint(complaint_data, user):
         async with async_session_factory() as session:
             stmt = (
                 insert(Complaint)
-                .values(**complaint_data.model_dump(),complainer_id = user.id)
+                .values(**complaint_data.model_dump(), complainer_id=user.id)
                 .returning(Complaint.id)
             )
             _id = (await session.execute(stmt)).scalar()
