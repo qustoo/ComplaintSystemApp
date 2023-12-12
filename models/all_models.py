@@ -41,3 +41,15 @@ class Complaint(Base):
         server_default=State.pending.name, nullable=False
     )
     complainer_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+
+
+class Transaction(Base):
+    __tablename__ = "transaction"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    quote_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    transfer_id: Mapped[int] = mapped_column(nullable=False)
+    target_account_id: Mapped[str] = mapped_column(String(200), nullable=False)
+    amount: Mapped[float]
+    complaint_id: Mapped[int] = mapped_column(
+        ForeignKey("complaint.id"), nullable=False
+    )
