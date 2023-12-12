@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     AWS_SECRET_KEY: str
     AWS_REGION: str
     AWS_BUCKET_NAME: str
+    WISE_TOKEN: str
+    WISE_URL: str
 
     @property
     def DATABASE_URL(self):
