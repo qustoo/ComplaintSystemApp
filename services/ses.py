@@ -25,3 +25,5 @@ class SESService:
             },
             Message={"Subject": {"Data": subject, "Charset": "UTF-8"}, "Body": body},
         ),
+
+ses = SESService()
