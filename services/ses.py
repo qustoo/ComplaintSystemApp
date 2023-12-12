@@ -17,7 +17,7 @@ class SESService:
         body = {"Text": {"Data": text_data, "Charset": "UTF-8"}}
 
         self.ses.send_email(
-            Source="test_mail@gmail.com",
+            Source="test_email@gmail.com",
             Destination={
                 "ToAddresses": to_addresses,
                 "CcAddresses": [],
