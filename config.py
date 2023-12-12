@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     DB_NAME: str
     JWT_SECRET: str
     ALGORITHM: str
+    AWS_ACCESS_KEY: str
+    AWS_SECRET_KEY: str
+    AWS_REGION: str
+    AWS_BUCKET_NAME: str
 
     @property
     def DATABASE_URL(self):
