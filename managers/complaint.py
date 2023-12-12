@@ -1,7 +1,14 @@
+import uuid
 from fastapi import Request
+import os
 from sqlalchemy import insert, select, update, delete
+from utils.helpers import decode_photo
+from constants import TEMP_FILE_ROLDER
 from models import RoleType, State, Complaint
 from database import async_session_factory
+from services import S3Service
+
+s3 = S3Service()
 
 
 class ComplaintManager:
@@ -18,16 +25,26 @@ class ComplaintManager:
 
     @staticmethod
     async def create_complaint(complaint_data, user):
+        complaint_data_dict = complaint_data.model_dump()
+        encoded_photo = complaint_data_dict.pop("encoded_photo")
+        extension = complaint_data_dict.pop("extension")
+        name = f"{uuid.uuid4()}.{extension}"
+        path = os.path.join(TEMP_FILE_ROLDER, name)
+        decode_photo(path, encoded_photo)
+        try:
+            s3.upload(path, name, extension)
+        except Exception as err:
+            s3_status = err
         async with async_session_factory() as session:
             stmt = (
                 insert(Complaint)
-                .values(**complaint_data.model_dump(), complainer_id=user.id)
+                .values(**complaint_data_dict, complainer_id=user.id)
                 .returning(Complaint.id)
             )
             _id = (await session.execute(stmt)).scalar()
             await session.commit()
             _res = await session.execute(select(Complaint).where(Complaint.id == _id))
-            return _res.scalars().one_or_none()
+            return {"result": _res.scalars().one_or_none(), "s3_status": s3_status}
 
     @staticmethod
     async def delete_complaint(_id: int):
