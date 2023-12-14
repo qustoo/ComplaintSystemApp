@@ -1,9 +1,11 @@
-from typing import Optional, List
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends
+
+from managers import is_admin, oauth2_schema
 from managers.user import UserManager
-from managers import oauth2_schema, is_admin
-from schemas.response import UserOut
 from models.enums import RoleType
+from schemas.response import UserOut
 
 router = APIRouter(tags=["Users"])
 

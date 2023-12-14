@@ -1,6 +1,7 @@
 from datetime import datetime
-from schemas.base import BaseComplaint
+
 from models import State
+from schemas.base import BaseComplaint
 
 
 class ComplaintOut(BaseComplaint):

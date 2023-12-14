@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from schemas.request import UserLoginIn, UserRegisterIn
+
 from managers import UserManager
+from schemas.request import UserLoginIn, UserRegisterIn
 
 router = APIRouter(tags=["Auth"])
 

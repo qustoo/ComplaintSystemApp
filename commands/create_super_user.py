@@ -4,10 +4,11 @@ import sys
 # Харкод импорт из другой папки
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 sys.path.append(PROJECT_ROOT)
-from sqlalchemy import insert
-from models import User, RoleType
-from database import async_session_factory
 import asyncclick as click
+from sqlalchemy import insert
+
+from database import async_session_factory
+from models import RoleType, User
 
 
 @click.command()

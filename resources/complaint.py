@@ -1,10 +1,11 @@
 from typing import List, Optional
+
 from fastapi import APIRouter, Depends, Request
+
+from managers import is_admin, is_complainer, oauth2_schema
 from managers.complaint import ComplaintManager
-from managers import oauth2_schema
 from schemas.request import ComplaintIn
 from schemas.response import ComplaintOut
-from managers import is_complainer, is_admin
 
 router = APIRouter(tags=["Complaints"])
 

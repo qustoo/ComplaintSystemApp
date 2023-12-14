@@ -1,12 +1,14 @@
+from datetime import datetime, timedelta
+
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt
 from jose.exceptions import JWTError
 from sqlalchemy import select
-from models import User, RoleType
+
 from config import settings
-from datetime import datetime, timedelta
 from database import async_session_factory
+from models import RoleType, User
 
 
 class AuthManager:

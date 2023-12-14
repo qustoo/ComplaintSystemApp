@@ -1,5 +1,5 @@
-from schemas.base import UserBase
 from models.enums import RoleType
+from schemas.base import UserBase
 
 
 class UserOut(UserBase):

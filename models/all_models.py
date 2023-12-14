@@ -1,11 +1,8 @@
-from typing import List
-from typing import Optional
-from sqlalchemy import DateTime, ForeignKey, func
-from sqlalchemy import String
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from typing import List, Optional
+
+from sqlalchemy import DateTime, ForeignKey, String, func
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 from .enums import RoleType, State
 
 

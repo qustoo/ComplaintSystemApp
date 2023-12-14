@@ -1,11 +1,12 @@
 from fastapi import HTTPException
 from passlib.context import CryptContext
 from sqlalchemy import insert, select, update
-from models.enums import RoleType
+
+from database import async_session_factory
 from managers import AuthManager
 from models import User
-from database import async_session_factory
-from schemas.request import UserRegisterIn, UserLoginIn
+from models.enums import RoleType
+from schemas.request import UserLoginIn, UserRegisterIn
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

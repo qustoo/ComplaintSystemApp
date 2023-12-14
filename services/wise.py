@@ -1,8 +1,10 @@
 import json
 import uuid
-from fastapi import HTTPException
-from config import settings
+
 import requests
+from fastapi import HTTPException
+
+from config import settings
 
 
 class WiseService:
