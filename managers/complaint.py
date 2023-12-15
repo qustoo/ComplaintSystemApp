@@ -1,7 +1,6 @@
 import os
 import uuid
 
-from fastapi import Request
 from sqlalchemy import delete, insert, select, update
 
 from constants import TEMP_FILE_ROLDER
@@ -69,14 +68,19 @@ class ComplaintManager:
                 .values(status=State.approved)
                 .filter_by(id=complaint_id)
             )
-            transaction_stmt = select(Transaction).filter(Transaction,complaint_id = complaint_id)
-            transaction_data = (await session.execute(transaction_stmt)).scalars().one_or_none()
-            wise.fund_transfer(transaction_data["transfer_id"])
-            ses.send_mail(
-            "Complaint approved!",
-            "Congrats! Your claim is approved, check your bank account in 2 days for your refund")
             await session.execute(stmt)
             await session.commit()
+            transaction_stmt = select(Transaction).filter(Transaction,complaint_id = complaint_id)
+            transaction_data = (await session.scalars(transaction_stmt)).one_or_none()
+            try:
+                wise.fund_transfer(transaction_data["transfer_id"])
+                ses.send_mail(
+                "Complaint approved!",
+                "Congrats! Your claim is approved, check your bank account in 2 days for your refund")
+            except Exception as err:
+                return {"wise status": f'{err=}'}
+                
+
 
     @staticmethod
     async def reject(complaint_id: int):
@@ -88,9 +92,12 @@ class ComplaintManager:
             )
             _id = (await session.execute(stmt)).scalar()
             transaction_stmt = select(Transaction).filter_by(complaint_id = _id)
-            transaction_data = (await session.execute(transaction_stmt)).scalars().one_or_none()
-            wise.cancel_funds(transaction_data["transfer_id"])
+            transaction_data = (await session.scalars(transaction_stmt)).one_or_none()
             await session.commit()
+            try:
+                wise.cancel_funds(transaction_data["transfer_id"])
+            except Exception as err:
+                return {"wise status": f'{err=}'}      
 
     @staticmethod
     async def issue_transaction(amount, full_name, iban, complaint_id):
