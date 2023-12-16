@@ -24,10 +24,13 @@ class WiseService:
             resp = resp.json()
             return [item["id"] for item in resp if item["type"] == "personal"][0]
         else:
-            raise HTTPException(
-                status_code=500,
-                detail="Payment provider is not available at the moment",
-            )
+            print("Payment provider is not available at the moment")
+            return -1
+        # else:
+        #     raise HTTPException(
+        #         status_code=500,
+        #         detail="Payment provider is not available at the moment",
+        #     )
 
     def create_quote(self, amount):
         url = self.main_url + "/v2/quotes"
